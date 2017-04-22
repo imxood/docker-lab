@@ -1,70 +1,65 @@
 FROM ubuntu:xenial
 MAINTAINER maxu <imxood@163.com>
 
-ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
 
-# Setup our Ubuntu sources
-ADD system/base/etc/apt/sources.list /etc/apt/sources.list
-RUN apt-get -y update
+ENV USER imxood
+ENV HOME /imxood
 
-RUN apt-get install -y --force-yes --no-install-recommends \
-	supervisor \
-	vim-tiny \
-	xfce4 xfce4-goodies x11vnc xvfb \
-	openssh-server \
-	&& mkdir /var/run/sshd
+ENV INST_SCRIPTS $HOME/install
 
-RUN apt-get install -y --force-yes --no-install-recommends  gcc g++
+COPY config/common/sources.list /etc/apt/sources.list
+#COPY config/install $INST_SCRIPTS
 
-# pip
-RUN apt-get install -y --force-yes --no-install-recommends wget \
-	&& wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py \
-	&& python get-pip.py \
-	&& rm -f get-pip.py
+### Install xfce UI
+COPY config/install/xfce_ui.sh $INST_SCRIPTS/xfce_ui.sh
+RUN $INST_SCRIPTS/xfce_ui.sh
+ADD config/xfce/ $HOME/
 
-# Web SSH
-RUN apt-get install -y --force-yes --no-install-recommends python-pip dtach \
-	openssh-client telnet \
-    && pip install gateone \
-    && mkdir -p /etc/gateone/ssl/ \
-    && apt-get autoclean -y \
-    && apt-get autoremove -y \
-    && rm -rf /var/cache/apt/archives/*.deb
+### Install tools
+COPY config/install/tools.sh $INST_SCRIPTS/tools.sh
+RUN $INST_SCRIPTS/tools.sh
 
-# Web VNC
-RUN apt-get install -y --force-yes --no-install-recommends gcc python-dev nginx \
-	python-numpy \
-    && apt-get autoclean -y \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /var/cache/apt/archives/*.deb
+### Install xvnc-server
+COPY config/install/tigervnc.sh $INST_SCRIPTS/tigervnc.sh
+RUN $INST_SCRIPTS/tigervnc.sh
 
-ADD system/web/web/requirements.txt /web-requirements.txt
-RUN pip install setuptools wheel \
-    && pip install -r /web-requirements.txt \
-    && rm /web-requirements.txt
+ENV NO_VNC_HOME $HOME/noVNC
 
-	
-RUN apt-get install -y --force-yes --no-install-recommends \
-	gcc g++ \
-	&& apt-get autoclean \
-	&& apt-get autoremove \
-	&& rm -rf /var/lib/apt/lists/*
+### Install noVNC - HTML5 based VNC viewer
+COPY config/install/no_vnc.sh $INST_SCRIPTS/no_vnc.sh
+RUN $INST_SCRIPTS/no_vnc.sh
 
-RUN apt-get -y update && apt-get install -y --force-yes --no-install-recommends \
-	iptables rsyslog fail2ban pwgen net-tools
+ENV STARTUPDIR /dockerstartup
 
-# For gateone invalid ip check
-RUN pip install netifaces
+### configure startup
+COPY config/scripts $STARTUPDIR
+COPY config/install/libnss_wrapper.sh $INST_SCRIPTS/libnss_wrapper.sh
+RUN $INST_SCRIPTS/libnss_wrapper.sh
 
-RUN apt-get autoclean \
-	&& apt-get autoremove \
-	&& rm -rf /var/lib/apt/lists/*
+COPY config/install/set_user_permission.sh $INST_SCRIPTS/set_user_permission.sh
+RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME
 
-ADD system/base/ /
-ADD system/web/ /
+RUN apt-get install -y --no-install-recommends xauth
 
-EXPOSE 6080 443
+## Connection ports for controlling the UI:
+# VNC port:5901
+# noVNC webport, connect via http://localhost:6901/?password=vncpassword
+ENV DISPLAY :1
+ENV VNC_PORT 5901
+ENV NO_VNC_PORT 6901
+EXPOSE $VNC_PORT $NO_VNC_PORT
 
-ENTRYPOINT ["./startup.sh"]
+### Envrionment config
+ENV VNC_COL_DEPTH 24
+ENV VNC_RESOLUTION 1280x1024
+ENV VNC_PW vncpassword
+
+COPY config/xterm/.Xdefaults $HOME/.Xdefaults
+
+USER 1984
+
+CMD ["/dockerstartup/vnc_startup.sh", "--tail-log"]
+
+# RUN echo "admin:admin" | chpasswd && echo "admin   ALL=(ALL)       ALL" >> /etc/sudoers
+# RUN echo "Ciphers aes128-cbc,aes192-cbc,aes256-cbc,blowfish-cbc,arcfour" >> /etc/ssh/sshd_config && echo "KexAlgorithms diffie-hellman-group1-sha1" >> /etc/ssh/sshd_config

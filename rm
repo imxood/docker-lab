@@ -1,0 +1,2 @@
+# docker rm -f $(docker ps -qf name=docker-lab)
+docker rm -f $(docker ps -aq)
