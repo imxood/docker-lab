@@ -20,4 +20,4 @@ rm -f v0.8.0.tar.gz
 chmod +x -v $NO_VNC_HOME/utils/*.sh
 
 ## create index.html to forward automatically to `vnc_auto.html`
-ln -s $NO_VNC_HOME/vnc_auto.html $NO_VNC_HOME/index.html
+ln -s $NO_VNC_HOME/vnc.html $NO_VNC_HOME/index.html

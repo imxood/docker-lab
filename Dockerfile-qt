@@ -3,7 +3,6 @@ MAINTAINER maxu <imxood@163.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV USER imxood
 ENV HOME /imxood
 
 ENV INST_SCRIPTS $HOME/install
@@ -27,8 +26,8 @@ RUN $INST_SCRIPTS/tigervnc.sh
 ARG QT=5.7.1
 ARG QTM=5.7
 
-# ADD http://download.qt.io/official_releases/qt/${QTM}/${QT}/qt-opensource-linux-x64-${QT}.run /tmp/qt/installer.run
-COPY qt-opensource-linux-x64-${QT}.run $HOME/installer.run
+ADD http://download.qt.io/official_releases/qt/${QTM}/${QT}/qt-opensource-linux-x64-${QT}.run $HOME/installer.run
+# COPY qt-opensource-linux-x64-${QT}.run $HOME/installer.run
 COPY config/qt/qt-installer-noninteractive.qs $HOME/script.qs
 COPY config/qt/qt.sh $HOME/qt.sh
 RUN $HOME/qt.sh
@@ -40,8 +39,6 @@ COPY config/install/no_vnc.sh $INST_SCRIPTS/no_vnc.sh
 RUN $INST_SCRIPTS/no_vnc.sh
 
 ENV STARTUPDIR /startup
-
-#USER $USER
 
 ### configure startup
 COPY config/scripts $STARTUPDIR
