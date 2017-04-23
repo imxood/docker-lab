@@ -1,3 +1,0 @@
-#!/bin/bash
-
-docker run -t -p 9999:22 --name docker-lab imxood/docker-lab

@@ -57,10 +57,20 @@ ENV VNC_COL_DEPTH 24
 ENV VNC_RESOLUTION 1280x1024
 ENV VNC_PW vncpassword
 
-RUN apt-get install -y make
+RUN apt-get install -y make xvfb
 
 COPY config/xterm/.Xdefaults $HOME/.Xdefaults
 
+ARG QT=5.7.1
+ARG QTM=5.7
+
+# ADD http://download.qt.io/official_releases/qt/${QTM}/${QT}/qt-opensource-linux-x64-${QT}.run /tmp/qt/installer.run
+COPY qt-opensource-linux-x64-${QT}.run $HOME/installer.run
+COPY config/qt/qt-installer-noninteractive.qs $HOME/script.qs
+COPY config/qt/qt.sh $HOME/qt.sh
+RUN $HOME/qt.sh
+
+RUN apt-get install -y build-essential libgl1-mesa-dev
 
 CMD ["/dockerstartup/vnc_startup.sh", "--tail-log"]
 
