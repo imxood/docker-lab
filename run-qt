@@ -1,0 +1,26 @@
+#!/bin/bash
+
+docker run --name docker-lab-qt -d -p 5901:5901 -p 6901:6901 imxood/docker-lab-qt
+
+# docker run \
+	# --name docker-lab \
+	# --privileged \
+	# -d -t \
+	# -p 6080:6080 -p 2222:22 -p 4433:443 \
+	# -e VNC_SHARED=0 \
+	# -e UNIX_USER=ubuntu \
+	# -e UNIX_PWD=ubuntu \
+	# -e VNC_PWD=ubuntu \
+	# -e SCREEN_SIZE=1280x720  \
+	# -e PROXY_SPEED_LIMIT=0 \
+	# -e NOSSL=1 \
+	# -e VNC_RECORD=0 \
+	# -e VNC_PLAYER=0 \
+	# -e VNC_TIMEOUT=0 \
+	# -e VNC_RECORD_FILE= \
+	# -e VNC_PUBLIC=0 \
+	# -e VNC_AUTH= \
+	# -e GATEONE_AUTH= \
+	# -e GATEONE_PUBLIC= \
+	# -h localhost \
+	# imxood/docker-lab

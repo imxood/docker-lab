@@ -8,6 +8,7 @@ mkdir -p $NO_VNC_HOME/utils/websockify
 
 wget -q --no-check-certificate https://github.com/novnc/noVNC/archive/master.zip
 unzip -d $NO_VNC_HOME master.zip
+rm -f master.zip
 
 cp -r $NO_VNC_HOME/noVNC-master/* $NO_VNC_HOME
 rm -rf noVNC-master
