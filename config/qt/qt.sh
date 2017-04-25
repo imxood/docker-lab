@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
-### every exit != 0 fails the script
 set -e
 
 # xvfb give a command `xvfb-run`,virtual X server
-apt-get install -y make gcc g++ build-essential libgl1-mesa-dev xvfb
-apt-get clean -y
+apt-get -y install make gcc g++ build-essential libgl1-mesa-dev xvfb
 
-chmod +x $HOME/installer.run
-xvfb-run $HOME/installer.run --script $HOME/script.qs
-rm -f $HOME/installer.run
-rm -f $HOME/script.qs
+# download the installation package
+wget -O installer.run http://download.qt.io/official_releases/qt/${QTM}/${QT}/qt-opensource-linux-x64-${QT}.run
+
+chmod +x $HOME/qt/installer.run
+xvfb-run $HOME/qt/installer.run --script $HOME/qt/qt-installer-noninteractive.qs
+
+rm -f $HOME/qt/installer.run
+rm -f $HOME/qt/script.qs
+
+apt-get -y clean
+apt-get -y autoremove
+
+# qt environment variable
+echo "PATH=\"/opt/qt/$QTM/gcc_64/bin:/opt/qt/Tools/QtCreator/bin:$PATH\"" >> /etc/profile

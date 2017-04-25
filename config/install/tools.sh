@@ -4,7 +4,6 @@ set -e
 
 echo "Install common tools"
 apt-get update -y
-apt-get install -y --no-install-recommends vim wget curl net-tools zip unzip
+apt-get install -y --no-install-recommends apt-utils vim wget curl net-tools zip unzip
 apt-get clean -y
-
-#iproute2
+apt-get autoremove -y

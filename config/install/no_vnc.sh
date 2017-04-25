@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
-### every exit != 0 fails the script
 set -e
 
 echo "Install noVNC - HTML5 based VNC viewer"
 
 mkdir -p $NO_VNC_HOME/utils/websockify
-
 wget -q --no-check-certificate https://github.com/novnc/noVNC/archive/master.zip
 unzip -d $NO_VNC_HOME master.zip
 rm -f master.zip
@@ -19,5 +17,4 @@ rm -f v0.8.0.tar.gz
 
 chmod +x -v $NO_VNC_HOME/utils/*.sh
 
-## create index.html to forward automatically to `vnc_auto.html`
 ln -s $NO_VNC_HOME/vnc.html $NO_VNC_HOME/index.html

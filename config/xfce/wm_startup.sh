@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-### every exit != 0 fails the script
 set -e
 
 echo -e "\n------------------ startup of Xfce4 window manager ------------------"

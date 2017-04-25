@@ -1,7 +1,12 @@
 #!/bin/bash
 
-docker run --name docker-lab-qt -d -p 5901:5901 -p 6901:6901 imxood/docker-lab-qt
+image="imxood/docker-lab-qt"
+[ $1 ] && image="$image:$1"
+echo "$image"
 
+docker run -v f:/docker-lab/docker-lab/Develop:/imxood/Develop -m 2G --name docker-lab-qt -d -p 5901:5901 -p 6901:6901 $image
+
+# -v f:/docker-lab/docker-lab/imxood:/imxood
 # docker run \
 	# --name docker-lab \
 	# --privileged \

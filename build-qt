@@ -1,3 +1,13 @@
 #!/bin/bash
 
- docker build -t imxood/docker-lab-qt -f Dockerfile-qt .
+version=0
+
+[ -f "version" ] && version=$(cat version)
+
+((version=$version+1));
+
+echo "version:$version"
+
+echo "$version" > version;
+
+docker build -t imxood/docker-lab-qt:$version -f Dockerfile-qt .
