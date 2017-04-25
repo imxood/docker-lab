@@ -27,7 +27,7 @@ ENV QT=5.7.1
 ENV QTM=5.7
 
 COPY config/qt $HOME/qt
-COPY qt-opensource-linux-x64-5.7.1.run $HOME/qt/installer.run
+#COPY qt-opensource-linux-x64-5.7.1.run $HOME/qt/installer.run
 RUN $HOME/qt/qt.sh
 RUN $HOME/qt/reqair_qt_fcitx.sh
 RUN rm -rf $HOME/qt
