@@ -5,7 +5,7 @@ set -e
 apt-get -y install make gcc g++ build-essential libgl1-mesa-dev xvfb
 
 # download the installation package
-wget -O installer.run http://download.qt.io/official_releases/qt/${QTM}/${QT}/qt-opensource-linux-x64-${QT}.run
+#wget -O installer.run http://download.qt.io/official_releases/qt/${QTM}/${QT}/qt-opensource-linux-x64-${QT}.run
 
 chmod +x $HOME/qt/installer.run
 xvfb-run $HOME/qt/installer.run --script $HOME/qt/qt-installer-noninteractive.qs
