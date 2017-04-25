@@ -10,4 +10,4 @@ echo "version:$version"
 
 echo "$version" > version;
 
-docker build -t imxood/docker-lab-qt:$version -f Dockerfile-qt .
+docker build -t imxood/docker-lab-qt:$version .
