@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+
+docker build -t imxood/docker-lab-linux-0-11:$1 -f Dockerfile-linux_0_11 .

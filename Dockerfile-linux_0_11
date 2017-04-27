@@ -1,63 +1,91 @@
 FROM ubuntu:xenial
+
 MAINTAINER maxu <imxood@163.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV HOME /imxood
+ENV USER imxood
+ENV HOME /home/imxood
+ENV LANG zh_CN.UTF-8
 
-ENV INST_SCRIPTS $HOME/install
+COPY config/system/etc/apt/sources.list /etc/apt/sources.list
 
-COPY config/common/sources.list /etc/apt/sources.list
-#COPY config/install $INST_SCRIPTS
+### config language
+RUN set -x   && \
+	apt-get -y update   && \
+	apt-get -y install locales   && \
+	locale-gen $LANG   && \
+	dpkg-reconfigure locales
 
 ### Install xfce UI
-COPY config/install/xfce_ui.sh $INST_SCRIPTS/xfce_ui.sh
-RUN $INST_SCRIPTS/xfce_ui.sh
-ADD config/xfce/ $HOME/
+RUN set -x   && \
+	apt-get -y update   && \
+	apt-get -y install supervisor xfce4   && \
+	apt-get -y install xfce4-terminal   && \
+	apt-get -y remove xterm   && \
+	apt-get -y clean   && \
+	apt-get -y autoremove
 
 ### Install tools
-COPY config/install/tools.sh $INST_SCRIPTS/tools.sh
-RUN $INST_SCRIPTS/tools.sh
+RUN set -x   && \
+	apt-get update -y   && \
+	apt-get install -y --no-install-recommends \
+				vim wget curl net-tools zip unzip   && \
+	apt-get -y clean   && \
+	apt-get -y autoremove
 
 ### Install xvnc-server
-COPY config/install/tigervnc.sh $INST_SCRIPTS/tigervnc.sh
-RUN $INST_SCRIPTS/tigervnc.sh
-
-ARG QT=5.7.1
-ARG QTM=5.7
-
-# ADD http://download.qt.io/official_releases/qt/${QTM}/${QT}/qt-opensource-linux-x64-${QT}.run /tmp/qt/installer.run
-COPY qt-opensource-linux-x64-${QT}.run $HOME/installer.run
-COPY config/qt/qt-installer-noninteractive.qs $HOME/script.qs
-COPY config/qt/qt.sh $HOME/qt.sh
-RUN $HOME/qt.sh
-
-ENV NO_VNC_HOME $HOME/noVNC
+RUN set -x   && \
+	wget -q --no-check-certificate \
+			https://dl.bintray.com/tigervnc/stable/tigervnc-1.7.0.x86_64.tar.gz && \
+	tar -xzf tigervnc-1.7.0.x86_64.tar.gz --strip 1 -C / && \
+	rm -f tigervnc-1.7.0.x86_64.tar.gz
 
 ### Install noVNC - HTML5 based VNC viewer
-COPY config/install/no_vnc.sh $INST_SCRIPTS/no_vnc.sh
-RUN $INST_SCRIPTS/no_vnc.sh
+RUN set -x   && \
+	mkdir -p $HOME/noVNC/utils/websockify   && \
+	wget -q --no-check-certificate \
+			https://github.com/novnc/noVNC/archive/master.zip  && \
+	unzip -d $HOME/noVNC master.zip   && \
+	cp -r $HOME/noVNC/noVNC-master/* $HOME/noVNC   && \
+	wget -q --no-check-certificate \
+			https://github.com/kanaka/websockify/archive/v0.8.0.tar.gz && \
+	tar -xzf v0.8.0.tar.gz --strip 1 -C $HOME/noVNC/utils/websockify   && \
+	rm -rf master.zip noVNC-master v0.8.0.tar.gz   && \
+	chmod +x -v $HOME/noVNC/utils/*.sh   && \
+	ln -s $HOME/noVNC/vnc.html $HOME/noVNC/index.html
 
+### install googlepinyin
+RUN set -x   && \
+	apt-get -y install fcitx fcitx-googlepinyin im-config   && \
+	apt-get -y install ttf-wqy-microhei ttf-wqy-zenhei   && \
+	apt-get -y clean   && \
+	apt-get -y autoremove
+
+RUN set -x && \
+	apt-get -y install make gcc-4.8 && \
+	apt-get -y --no-install-recommends install git && \
+	ln -s /usr/bin/gcc-4.8 /usr/bin/gcc && \
+	git clone https://github.com/imxood/linux-0.11-lab.git && \
+	apt-get -y install cscope exuberant-ctags  binutils qemu && \
+	apt-get -y clean
+	
 ENV STARTUPDIR /startup
-
-### configure startup
-COPY config/scripts $STARTUPDIR
-
-COPY config/xterm/.Xdefaults $HOME/.Xdefaults
 
 ## Connection ports for controlling the UI:
 # VNC port:5901
-# noVNC webport, connect via http://localhost:6901/?password=vncpassword
+# noVNC webport: http://localhost:6901/?password=vncpassword
+
 ENV DISPLAY :1
 ENV VNC_PORT 5901
 ENV NO_VNC_PORT 6901
-EXPOSE $VNC_PORT $NO_VNC_PORT
-
-ENV VNC_COL_DEPTH 24
-ENV VNC_RESOLUTION 1345x623
+ENV VNC_COL_DEPTH 32
+ENV VNC_RESOLUTION 1344x622
 ENV VNC_PW vncpassword
 
-CMD ["/startup/vnc_startup.sh", "--tail-log"]
+EXPOSE $VNC_PORT $NO_VNC_PORT
 
-# RUN echo "admin:admin" | chpasswd && echo "admin   ALL=(ALL)       ALL" >> /etc/sudoers
-# RUN echo "Ciphers aes128-cbc,aes192-cbc,aes256-cbc,blowfish-cbc,arcfour" >> /etc/ssh/sshd_config && echo "KexAlgorithms diffie-hellman-group1-sha1" >> /etc/ssh/sshd_config
+COPY config/system/startup /startup
+COPY config/system/home/ $HOME/
+
+CMD ["/startup/vnc_startup.sh", "--tail-log"]

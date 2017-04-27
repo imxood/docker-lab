@@ -1,0 +1,42 @@
+FROM ubuntu:14.04.5
+MAINTAINER imxood <imxood@163.com>
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV HOME /home/ubuntu/
+
+# Configure the fast DNS resolv server
+ADD config/base/etc/resolv.conf /etc/resolv.conf
+RUN /usr/sbin/service networking restart
+
+# Setup our Ubuntu sources
+ADD system/base/etc/apt/sources.list /etc/apt/sources.list
+RUN apt-get -y update
+
+# Core
+RUN apt-get install -y --force-yes --no-install-recommends \
+	supervisor \
+	software-properties-common \
+	pwgen net-tools \
+	ttf-ubuntu-font-family \
+    && apt-get autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/cache/apt/archives/*.deb
+
+RUN apt-get install -y --force-yes --no-install-recommends \
+	lxde x11vnc xvfb \
+	openssh-server \
+	rsyslog fail2ban iptables \
+    && mkdir /var/run/sshd \
+    && sudo -u syslog touch /var/log/auth.log \
+    && apt-get autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/cache/apt/archives/*.deb
+
+ADD system/base/ /
+
+EXPOSE 5900 22
+
+WORKDIR /
+
+ENTRYPOINT ["/startup.sh"]

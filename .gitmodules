@@ -1,0 +1,3 @@
+[submodule "labs"]
+	path = labs
+	url = https://github.com/imxood/linux-0.11-lab.git
