@@ -5,9 +5,8 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV HOME /home/imxood
 
-COPY config/qt/etc/apt/sources.list /etc/apt/sources.list
-
-RUN apt-get -y update
+RUN sed -i -e "s%archive.ubuntu.com%mirrors.163.com%g" /etc/apt/sources.list \
+	&& apt-get -y update
 
 ### language config
 

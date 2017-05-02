@@ -5,10 +5,11 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV HOME /home/imxood
 
-RUN sed -i -e "s%archive.ubuntu.com%mirrors.163.com%g" /etc/apt/sources.list
-
-RUN apt-get -y update \
+RUN sed -i -e "s%archive.ubuntu.com%mirrors.163.com%g" /etc/apt/sources.list \
+	&& apt-get -y update \
 	&& apt-get -y --no-install-recommends install apt-utils \
+	&& apt-get -y autoclean \
+	&& apt-get -y autoremove \
 	&& rm -rf /var/cache/apt/archives/*.deb
 
 ### language config
@@ -23,13 +24,12 @@ RUN apt-get -y install locales \
 	&& rm -rf /var/cache/apt/archives/*.deb
 
 RUN apt-get -y install fcitx fcitx-googlepinyin im-config \
-	&& apt-get -y --no-install-recommends install ttf-wqy-microhei \
+	&& apt-get -y --no-install-recommends install ttf-wqy-microhei ttf-wqy-zenhei \
 	&& apt-get -y autoclean \
 	&& apt-get -y autoremove \
 	&& rm -rf /var/cache/apt/archives/*.deb
 
 RUN apt-get -y install xfce4 xfce4-terminal \
-	&& apt-get -y remove xterm \
 	&& apt-get -y autoclean \
 	&& apt-get -y autoremove \
 	&& rm -rf /var/cache/apt/archives/*.deb
@@ -67,7 +67,10 @@ COPY config/linux_0_11/ /
 ### Install noVNC - HTML5 based VNC viewer
 RUN /install_files/no_vnc.sh
 
-RUN rm -rf /var/lib/apt/lists/* && rm -rf /install_files
+RUN apt-get -y install gcc-4.8 make gdb \
+	&& ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
+
+RUN rm -rf /install_files
 
 ### configure startup
 
