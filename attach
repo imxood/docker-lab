@@ -1,8 +1,0 @@
-#!/bin/bash
-set -e
-
-container=`docker ps -a | sed -n "/$1/p" | awk '{print $1}'`
-
-[ -z "$container"  ] && echo "找不到相关容器." && exit 0
-
-docker attach $container
