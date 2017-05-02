@@ -1,3 +1,0 @@
-#!/bin/bash
-
-docker build -t imxood/docker-lab-qt:$1 -f Dockerfile-qt .

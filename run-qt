@@ -1,10 +1,6 @@
 #!/bin/bash
 
-image="imxood/docker-lab-qt"
-[ $1 ] && image="$image:$1"
-echo "$image"
-
-docker run -v f:/docker-lab/docker-lab/Develop:/imxood/Develop -m 2G --name docker-lab-qt -d -p 5901:5901 -p 6901:6901 $image
+docker run -v f:/docker-lab/docker-lab/docker-share/Develop:/home/imxood/Develop -m 2G --name qt -d -p 5901:5901 -p 6901:6901 imxood/qt:1
 
 # -v f:/docker-lab/docker-lab/imxood:/imxood
 # docker run \

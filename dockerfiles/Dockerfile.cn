@@ -8,7 +8,7 @@ RUN apt-get -y update
 
 # Core
 RUN apt-get install -y --force-yes --no-install-recommends \
-	language-pack-zh-hant language-pack-zh-hans \
+	language-pack-zh-hans \
 	fonts-arphic-bkai00mp fonts-arphic-bsmi00lp \
 	fonts-arphic-gbsn00lp fonts-arphic-gkai00mp \
 	fonts-arphic-ukai fonts-arphic-uming \

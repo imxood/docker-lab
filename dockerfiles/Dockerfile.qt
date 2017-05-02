@@ -1,0 +1,78 @@
+FROM ubuntu:xenial
+MAINTAINER maxu <imxood@163.com>
+
+ENV DEBIAN_FRONTEND noninteractive
+
+ENV HOME /home/imxood
+
+COPY config/qt/etc/apt/sources.list /etc/apt/sources.list
+
+RUN apt-get -y update
+
+### language config
+
+ENV LANG zh_CN.UTF-8
+
+RUN set -x && \
+	apt-get -y install locales && \
+	locale-gen $LANG && \
+	dpkg-reconfigure locales
+
+RUN set -x && \
+	apt-get -y install fcitx fcitx-googlepinyin im-config && \
+	apt-get -y clean && \
+	apt-get -y autoremove
+
+	
+RUN set -x && \
+	apt-get -y install xfce4 xfce4-terminal && \
+	apt-get -y remove xterm && \
+	apt-get -y purge pm-utils xscreensaver* && \
+	apt-get -y clean && \
+	apt-get -y autoremove
+
+RUN set -x && \
+	apt-get -y install vim wget curl net-tools zip unzip sqlite3 && \
+	apt-get -y clean && \
+	apt-get -y autoremove
+
+RUN set -x && \
+	wget -q --no-check-certificate \
+			https://dl.bintray.com/tigervnc/stable/tigervnc-1.7.0.x86_64.tar.gz && \
+	tar -xzf tigervnc-1.7.0.x86_64.tar.gz --strip 1 -C / && \
+	rm -f tigervnc-1.7.0.x86_64.tar.gz
+
+COPY config/qt/install_files /install_files
+
+ENV QT=5.7.1
+ENV QTM=5.7
+
+COPY qt-opensource-linux-x64-5.7.1.run /install_files/installer.run
+RUN /install_files/qt.sh
+
+COPY config/qt/system/ /
+
+### Install noVNC - HTML5 based VNC viewer
+RUN /install_files/no_vnc.sh
+
+RUN apt-get -y --no-install-recommends install python ttf-wqy-microhei
+
+RUN apt-get -y --no-install-recommends install git
+
+RUN rm -rf /var/lib/apt/lists/* && rm -rf /install_files
+
+### configure startup
+
+## Connection ports for controlling the UI:
+# VNC port:5901
+# noVNC webport, connect via http://localhost:6901/?password=vncpassword
+ENV DISPLAY :1
+ENV VNC_PORT 5901
+ENV NO_VNC_PORT 6901
+EXPOSE $VNC_PORT $NO_VNC_PORT
+
+ENV VNC_COL_DEPTH 32
+ENV VNC_RESOLUTION 1024x768
+ENV VNC_PW vncpassword
+
+CMD ["/startup.sh"]

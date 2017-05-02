@@ -1,5 +1,0 @@
-#!/bin/bash
-
-image="imxood/docker-lab-linux-0-11:$1"
-
-docker run -v f:/docker-lab/docker-lab/Linux-0-11:/home/imxood/Linux-0-11 -m 2G --name docker-lab-linux-0-11 -d -p 5901:5901 -p 6901:6901 $image

@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+[ $# -ne 2 ] && echo "Error: should have 2 params." && exit
+
+echo "docker build -t imxood/$1:$2 -f ./dockerfiles/Dockerfile.$1 ."
+
+docker build -t imxood/$1:$2 -f ./dockerfiles/Dockerfile.$1 .

@@ -1,0 +1,3 @@
+xterm*faceName: Consolas: antialias=True: pixelsize=18
+xterm*faceNameDoublesize: Microsoft YaHei: antialias=True: pixelsize=16
+Xterm*locale:zh_CN.UTF-8

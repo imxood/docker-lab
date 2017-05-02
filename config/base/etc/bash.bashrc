@@ -69,3 +69,4 @@ fi
 
 # Load locales for every Bash execution
 . /etc/skel/.bashrc
+. /etc/profile.d/locales.sh

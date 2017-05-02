@@ -1,2 +1,12 @@
-# docker rm -f $(docker ps -qf name=docker-lab)
-docker rm -f $(docker ps -aq)
+#!/bin/bash
+set -e
+
+[ $# -ne 1 ] && echo "参数错误,需要一个参数" && exit 1
+
+container=`docker ps -a | sed -n "/$1/p" | awk '{print $1}'`
+
+[ -z "$container"  ] && echo "找不到相关容器." && exit 1
+
+msg=`docker rm -f $container`
+
+echo "已删除$msg"

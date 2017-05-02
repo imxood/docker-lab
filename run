@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+[ $# -ne 2 ] && echo "Error: should have 2 params." && exit
+
+echo "docker run -t -i -v f:/docker-lab/docker-lab/docker-share/$1:/imxood/$1 -m 2G --name $1 -d -p 5901:5901 -p 6901:6901 imxood/$1:$2"
+
+docker run -v f:/docker-lab/docker-lab/docker-share/$1:/home/imxood/$1 -m 2G --name $1 -d -p 5901:5901 -p 6901:6901 imxood/$1:$2

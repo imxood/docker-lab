@@ -1,0 +1,86 @@
+FROM ubuntu:xenial
+MAINTAINER imxood <imxood@163.com>
+
+ENV DEBIAN_FRONTEND noninteractive
+
+ENV HOME /home/imxood
+
+RUN sed -i -e "s%archive.ubuntu.com%mirrors.163.com%g" /etc/apt/sources.list
+
+RUN apt-get -y update \
+	&& apt-get -y --no-install-recommends install apt-utils \
+	&& rm -rf /var/cache/apt/archives/*.deb
+
+### language config
+
+ENV LANG zh_CN.UTF-8
+
+RUN apt-get -y install locales \
+	&& locale-gen $LANG \
+	&& dpkg-reconfigure locales \
+	&& apt-get -y autoclean \
+	&& apt-get -y autoremove \
+	&& rm -rf /var/cache/apt/archives/*.deb
+
+RUN apt-get -y install fcitx fcitx-googlepinyin im-config \
+	&& apt-get -y --no-install-recommends install ttf-wqy-microhei \
+	&& apt-get -y autoclean \
+	&& apt-get -y autoremove \
+	&& rm -rf /var/cache/apt/archives/*.deb
+
+RUN apt-get -y install xfce4 xfce4-terminal \
+	&& apt-get -y remove xterm \
+	&& apt-get -y autoclean \
+	&& apt-get -y autoremove \
+	&& rm -rf /var/cache/apt/archives/*.deb
+
+RUN apt-get -y --no-install-recommends install vim wget curl zip unzip git python \
+	&& apt-get -y install net-tools \
+	&& apt-get -y autoclean \
+	&& apt-get -y autoremove \
+	&& rm -rf /var/cache/apt/archives/*.deb
+
+RUN apt-get install -y --no-install-recommends qemu-system-x86 \
+    && apt-get autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/cache/apt/archives/*.deb
+
+RUN apt-get install -y --no-install-recommends qemu-user \
+    && apt-get autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/cache/apt/archives/*.deb
+
+RUN apt-get install -y --no-install-recommends \
+	bochs vgabios bochsbios bochs-x libltdl7 bochs-sdl bochs-term \
+    && apt-get autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/cache/apt/archives/*.deb
+
+
+RUN wget -q --no-check-certificate \
+			https://dl.bintray.com/tigervnc/stable/tigervnc-1.7.0.x86_64.tar.gz \
+	&& tar -xzf tigervnc-1.7.0.x86_64.tar.gz --strip 1 -C / \
+	&& rm -f tigervnc-1.7.0.x86_64.tar.gz
+
+COPY config/linux_0_11/ /
+
+### Install noVNC - HTML5 based VNC viewer
+RUN /install_files/no_vnc.sh
+
+RUN rm -rf /var/lib/apt/lists/* && rm -rf /install_files
+
+### configure startup
+
+## Connection ports for controlling the UI:
+# VNC port:5901
+# noVNC webport, connect via http://localhost:6901/?password=vncpassword
+ENV DISPLAY :1
+ENV VNC_PORT 5901
+ENV NO_VNC_PORT 6901
+EXPOSE $VNC_PORT $NO_VNC_PORT
+
+ENV VNC_COL_DEPTH 32
+ENV VNC_RESOLUTION 1024x768
+ENV VNC_PW vncpassword
+
+CMD ["/startup.sh"]
