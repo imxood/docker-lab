@@ -2,6 +2,12 @@
 "处理未保存或只读文件时，弹出确认
 set confirm
 
+"显示状态
+set ls=2
+
+"自动缩进
+set ai
+
 "自动保存
 set autowrite
 
@@ -26,11 +32,11 @@ set nu
 
 "设置缩进
 set tabstop=4
-set sts=4
-set smartindent
-set expandtab
-set softtabstop=4
-set shiftwidth=4
+"set sts=4
+"set smartindent
+"set expandtab
+"set softtabstop=4
+"set shiftwidth=4
 "设置自动格式化,解决复制代码过来的时候出现格式混乱
 "shift +v 开头
 "shift +g 结尾
@@ -66,12 +72,12 @@ set mouse=a
 "突出显示当前编辑行
 set cursorline
 "开启折叠，并设置空格来开关折叠
-set foldenable
-set foldmethod=syntax
-set foldcolumn=0
-setlocal foldlevel=1
-set foldclose=all
-nnoremap <space> @=((foldclosed(line('.'))<0)?'zc':'zo')<CR>
+"set foldenable
+"set foldmethod=syntax
+"set foldcolumn=0
+"setlocal foldlevel=1
+"set foldclose=all
+"nnoremap <space> @=((foldclosed(line('.'))<0)?'zc':'zo')<CR>
 "搜索和undo时不展开设置好的折叠
-set foldopen-=search
-set foldopen-=undo
+"set foldopen-=search
+"set foldopen-=undo

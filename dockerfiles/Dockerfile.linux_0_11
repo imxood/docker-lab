@@ -45,18 +45,6 @@ RUN apt-get install -y --no-install-recommends qemu-system-x86 \
     && apt-get autoremove -y \
     && rm -rf /var/cache/apt/archives/*.deb
 
-RUN apt-get install -y --no-install-recommends qemu-user \
-    && apt-get autoclean -y \
-    && apt-get autoremove -y \
-    && rm -rf /var/cache/apt/archives/*.deb
-
-RUN apt-get install -y --no-install-recommends \
-	bochs vgabios bochsbios bochs-x libltdl7 bochs-sdl bochs-term \
-    && apt-get autoclean -y \
-    && apt-get autoremove -y \
-    && rm -rf /var/cache/apt/archives/*.deb
-
-
 RUN wget -q --no-check-certificate \
 			https://dl.bintray.com/tigervnc/stable/tigervnc-1.7.0.x86_64.tar.gz \
 	&& tar -xzf tigervnc-1.7.0.x86_64.tar.gz --strip 1 -C / \

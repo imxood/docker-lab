@@ -1,2 +1,0 @@
-PATH="/opt/qt/$QTM/gcc_64/bin:/opt/qt/Tools/QtCreator/bin:$PATH"
-export PATH
