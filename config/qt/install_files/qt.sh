@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 # xvfb give a command `xvfb-run`,virtual X server
 apt-get -y install make gcc g++ build-essential libgl1-mesa-dev xvfb
@@ -15,8 +14,8 @@ echo "PATH=\"/opt/qt/$QTM/gcc_64/bin:/opt/qt/Tools/QtCreator/bin:$PATH\"" >> /et
 
 apt-get -y install fcitx-frontend-qt5
 
-cp /usr/lib/x86_64-Linux-gnu/qt5/plugins/platforminputcontexts/* /opt/qt/5.7/gcc_64/plugins/platforminputcontexts
-cp /usr/lib/x86_64-Linux-gnu/qt5/plugins/platforminputcontexts/* /opt/qt/Tools/QtCreator/lib/Qt/plugins/platforminputcontexts
+cp /usr/lib/x86_64-linux-gnu/qt5/plugins/platforminputcontexts/* /opt/qt/5.7/gcc_64/plugins/platforminputcontexts
+cp /usr/lib/x86_64-linux-gnu/qt5/plugins/platforminputcontexts/* /opt/qt/Tools/QtCreator/lib/Qt/plugins/platforminputcontexts
 
 apt-get -y clean
 apt-get -y autoremove

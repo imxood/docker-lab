@@ -32,11 +32,11 @@ set nu
 
 "设置缩进
 set tabstop=4
-"set sts=4
+set sts=4
 "set smartindent
 "set expandtab
-"set softtabstop=4
-"set shiftwidth=4
+set softtabstop=4
+set shiftwidth=4
 "设置自动格式化,解决复制代码过来的时候出现格式混乱
 "shift +v 开头
 "shift +g 结尾

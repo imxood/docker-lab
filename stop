@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+[ $# -ne 1 ] && echo "参数错误,需要一个参数" && exit 1
+
+container=`docker ps -a | sed -n "/$1/p" | awk '{print $1}'`
+
+[ -z "$container"  ] && echo "找不到相关容器." && exit 1
+
+msg=`docker stop $container`
+
+echo "已停止$msg"

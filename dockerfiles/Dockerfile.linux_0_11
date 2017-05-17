@@ -34,8 +34,17 @@ RUN apt-get -y install xfce4 xfce4-terminal \
 	&& apt-get -y autoremove \
 	&& rm -rf /var/cache/apt/archives/*.deb
 
-RUN apt-get -y --no-install-recommends install vim wget curl zip unzip git python \
+RUN apt-get -y --no-install-recommends install \
+		vim wget curl zip unzip git gcc g++ gdb make \
 	&& apt-get -y install net-tools \
+	&& apt-get -y autoclean \
+	&& apt-get -y autoremove \
+	&& rm -rf /var/cache/apt/archives/*.deb
+
+RUN apt-get install python3.5 \
+	&& wget https://bootstrap.pypa.io/get-pip.py \
+	&& python3 get-pip.py \
+	&& pip install tensorflow \
 	&& apt-get -y autoclean \
 	&& apt-get -y autoremove \
 	&& rm -rf /var/cache/apt/archives/*.deb
@@ -50,13 +59,11 @@ RUN wget -q --no-check-certificate \
 	&& tar -xzf tigervnc-1.7.0.x86_64.tar.gz --strip 1 -C / \
 	&& rm -f tigervnc-1.7.0.x86_64.tar.gz
 
+RUN 
 COPY config/linux_0_11/ /
 
 ### Install noVNC - HTML5 based VNC viewer
 RUN /install_files/no_vnc.sh
-
-RUN apt-get -y install gcc-4.8 make gdb \
-	&& ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
 
 RUN rm -rf /install_files
 

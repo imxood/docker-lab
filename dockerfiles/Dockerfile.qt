@@ -21,7 +21,6 @@ RUN set -x && \
 	apt-get -y install fcitx fcitx-googlepinyin im-config && \
 	apt-get -y clean && \
 	apt-get -y autoremove
-
 	
 RUN set -x && \
 	apt-get -y install xfce4 xfce4-terminal && \
